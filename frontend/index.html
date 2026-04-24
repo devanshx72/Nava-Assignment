@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI Engineering Showcase — 7 production-ready AI tasks built with FastAPI and Groq." />
+  <title>AI Engineering Showcase</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <h1><span class="logo-dot"></span>AI Showcase</h1>
+    <p>7-Task Engineering Assessment</p>
+  </div>
+
+  <ul id="nav-list">
+    <li><button id="nav-btn-1" onclick="showTask(1)">
+      RAG Pipeline
+      <span class="nav-badge">01</span>
+    </button></li>
+    <li><button id="nav-btn-2" onclick="showTask(2)">
+      AI Agent
+      <span class="nav-badge">02</span>
+    </button></li>
+    <li><button id="nav-btn-3" onclick="showTask(3)">
+      LLM Judge
+      <span class="nav-badge">03</span>
+    </button></li>
+    <li><button id="nav-btn-4" onclick="showTask(4)">
+      Hallucination
+      <span class="nav-badge">04</span>
+    </button></li>
+    <li><button id="nav-btn-5" onclick="showTask(5)">
+      Re-Ranker
+      <span class="nav-badge">05</span>
+    </button></li>
+    <li><button id="nav-btn-6" onclick="showTask(6)">
+      Guardrails
+      <span class="nav-badge">06</span>
+    </button></li>
+    <li><button id="nav-btn-7" onclick="showTask(7)">
+      Multi-Agent
+      <span class="nav-badge">07</span>
+    </button></li>
+  </ul>
+
+  <div id="health-dot"><span class="dot"></span> Checking…</div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════ -->
+<main id="main">
+
+  <!-- ── TASK 1: RAG Pipeline ── -->
+  <section id="task1" class="task-panel">
+    <div class="task-header">
+      <h2>RAG Pipeline</h2>
+      <p>Retrieval-Augmented Generation using sentence-transformers embeddings, ChromaDB vector store, and Groq LLM.</p>
+      <span class="task-badge">Task 01 — Retrieval</span>
+    </div>
+
+    <div class="card">
+      <h3>Step 1a — Ingest Text Documents</h3>
+      <label for="t1-docs">Documents (one per line)</label>
+      <textarea id="t1-docs" rows="6" placeholder="The Eiffel Tower is in Paris, France.&#10;Python was created by Guido van Rossum in 1991.&#10;The speed of light is approximately 299,792 km/s."></textarea>
+      <div class="btn-row">
+        <button id="t1-ingest-btn" class="btn btn-primary" onclick="task1Ingest()">Ingest Documents</button>
+      </div>
+      <br/>
+      <div id="t1-ingest-out" class="output-panel empty">Ingest result will appear here</div>
+    </div>
+
+    <div class="card">
+      <h3>Step 1b — Upload PDF</h3>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">
+        Upload a text-based PDF. Each page becomes a separate chunk in ChromaDB.
+        <em>Note: uploading replaces any previously ingested documents.</em>
+      </p>
+      <label for="t1-pdf-input" id="t1-pdf-label" class="pdf-drop-zone">
+        <span id="t1-pdf-label-text">Click to choose a PDF file</span>
+        <input type="file" id="t1-pdf-input" accept=".pdf" onchange="task1PdfSelected(this)" />
+      </label>
+      <div class="btn-row" style="margin-top:12px;">
+        <button id="t1-pdf-btn" class="btn btn-primary" onclick="task1IngestPdf()" disabled>Upload &amp; Ingest PDF</button>
+      </div>
+      <br/>
+      <div id="t1-pdf-out" class="output-panel empty">PDF ingest result will appear here</div>
+    </div>
+
+    <div class="card">
+      <h3>Step 2 — Query</h3>
+      <label for="t1-query">Question</label>
+      <input type="text" id="t1-query" placeholder="Where is the Eiffel Tower?" />
+      <label for="t1-topk">Top-K chunks</label>
+      <input type="number" id="t1-topk" value="3" min="1" max="10" />
+      <div class="btn-row">
+        <button id="t1-query-btn" class="btn btn-primary" onclick="task1Query()">Query</button>
+      </div>
+      <br/>
+      <div id="t1-query-out" class="output-panel empty">Answer and retrieved chunks will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 2: AI Agent ── -->
+  <section id="task2" class="task-panel">
+    <div class="task-header">
+      <h2>AI Agent with Tool Use</h2>
+      <p>ReAct-style agent loop with a <b>calculator</b> tool and a <b>web search</b> tool. The agent reasons, acts, observes, and repeats.</p>
+      <span class="task-badge">Task 02 — Agentic</span>
+    </div>
+
+    <div class="card">
+      <h3>Agent Query</h3>
+      <label for="t2-query">Your Query (math or information lookup)</label>
+      <input type="text" id="t2-query" placeholder="What is 15% of 4500, and who invented calculus?" />
+      <div class="btn-row">
+        <button id="t2-btn" class="btn btn-primary" onclick="task2Run()">Run Agent</button>
+      </div>
+      <br/>
+      <div id="t2-out" class="output-panel empty">Step-by-step reasoning and final answer will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 3: LLM Judge ── -->
+  <section id="task3" class="task-panel">
+    <div class="task-header">
+      <h2>LLM-as-a-Judge</h2>
+      <p>Evaluates an answer on accuracy, relevance, completeness, and clarity. Leave the answer blank to auto-generate one.</p>
+      <span class="task-badge">Task 03 — Evaluation</span>
+    </div>
+
+    <div class="card">
+      <h3>Evaluation Inputs</h3>
+      <label for="t3-question">Question</label>
+      <input type="text" id="t3-question" placeholder="What is photosynthesis?" />
+      <label for="t3-answer">Answer to evaluate (leave blank to auto-generate)</label>
+      <textarea id="t3-answer" rows="4" placeholder="Photosynthesis is the process by which plants convert sunlight into food…"></textarea>
+      <label for="t3-ref">Reference answer (optional)</label>
+      <input type="text" id="t3-ref" placeholder="Photosynthesis converts light energy into chemical energy stored in glucose…" />
+      <div class="btn-row">
+        <button id="t3-btn" class="btn btn-primary" onclick="task3Run()">Evaluate</button>
+      </div>
+      <br/>
+      <div id="t3-out" class="output-panel empty">Scores and verdict will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 4: Hallucination Detection ── -->
+  <section id="task4" class="task-panel">
+    <div class="task-header">
+      <h2>Hallucination Detector</h2>
+      <p>Splits the LLM answer into sentences and verifies each one against the source context. Flags unsupported or contradicted claims.</p>
+      <span class="task-badge">Task 04 — Faithfulness</span>
+    </div>
+
+    <div class="card">
+      <h3>Source and Answer</h3>
+      <label for="t4-context">Source Context (ground truth)</label>
+      <textarea id="t4-context" rows="5" placeholder="The Eiffel Tower was built between 1887 and 1889. It stands 330 metres tall and is located in Paris."></textarea>
+      <label for="t4-answer">LLM-Generated Answer to verify</label>
+      <textarea id="t4-answer" rows="5" placeholder="The Eiffel Tower is located in Berlin. It was constructed in 1900 and stands 300 metres tall."></textarea>
+      <div class="btn-row">
+        <button id="t4-btn" class="btn btn-primary" onclick="task4Run()">Detect Hallucinations</button>
+      </div>
+      <br/>
+      <div id="t4-out" class="output-panel empty">Sentence-by-sentence analysis will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 5: Re-Ranker ── -->
+  <section id="task5" class="task-panel">
+    <div class="task-header">
+      <h2>LLM Re-Ranker</h2>
+      <p>Scores a list of search results for relevance to the query and returns them sorted by score.</p>
+      <span class="task-badge">Task 05 — Ranking</span>
+    </div>
+
+    <div class="card">
+      <h3>Query and Results</h3>
+      <label for="t5-query">Search Query</label>
+      <input type="text" id="t5-query" placeholder="best practices for machine learning model deployment" />
+      <label for="t5-results">Search Results (one per line)</label>
+      <textarea id="t5-results" rows="7" placeholder="How to bake a chocolate cake at home.&#10;MLOps guide: CI/CD pipelines for ML models in production.&#10;Top 10 tourist destinations in Europe.&#10;Containerising ML models with Docker and Kubernetes.&#10;History of artificial intelligence research."></textarea>
+      <div class="btn-row">
+        <button id="t5-btn" class="btn btn-primary" onclick="task5Run()">Re-rank</button>
+      </div>
+      <br/>
+      <div id="t5-out" class="output-panel empty">Re-ranked results will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 6: Guardrails ── -->
+  <section id="task6" class="task-panel">
+    <div class="task-header">
+      <h2>LLM Output Guardrails</h2>
+      <p>Runs three checks: off-topic detection (LLM), PII detection (regex), and toxicity detection (LLM). Blocks on any failure.</p>
+      <span class="task-badge">Task 06 — Safety</span>
+    </div>
+
+    <div class="card">
+      <h3>Check Configuration</h3>
+      <label for="t6-topic">Allowed Topic</label>
+      <input type="text" id="t6-topic" placeholder="cooking recipes" />
+      <label for="t6-output">LLM Output to Check</label>
+      <textarea id="t6-output" rows="5" placeholder="Here is a great pasta recipe. Contact me at john@example.com or 555-123-4567 for more."></textarea>
+      <div class="btn-row">
+        <button id="t6-btn" class="btn btn-primary" onclick="task6Run()">Check Output</button>
+      </div>
+      <br/>
+      <div id="t6-out" class="output-panel empty">Guardrail check results will appear here</div>
+    </div>
+  </section>
+
+  <!-- ── TASK 7: Multi-Agent ── -->
+  <section id="task7" class="task-panel">
+    <div class="task-header">
+      <h2>Multi-Agent System</h2>
+      <p>A 3-agent pipeline: Researcher collects facts, Analyst extracts insights, Writer produces a final business report.</p>
+      <span class="task-badge">Task 07 — Orchestration</span>
+    </div>
+
+    <div class="card">
+      <h3>Research Task</h3>
+      <label for="t7-task">Research Topic or Business Question</label>
+      <textarea id="t7-task" rows="4" placeholder="Analyse the impact of large language models on the software development industry and provide strategic recommendations for companies."></textarea>
+      <div class="btn-row">
+        <button id="t7-btn" class="btn btn-primary" onclick="task7Run()">Run Pipeline</button>
+      </div>
+      <br/>
+      <div id="t7-out" class="output-panel empty">Agent pipeline outputs will appear here</div>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
